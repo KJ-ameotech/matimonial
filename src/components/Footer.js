@@ -1,5 +1,5 @@
 import React from "react";
-import AmeotechLogo from '../assets/images/ameotech-logo-11.png'
+// import AmeotechLogo from '../assets/images/ameotech-logo-11.png'
 const Footer = () => {
   return (
     <div className="footer-container">
@@ -7,14 +7,9 @@ const Footer = () => {
         <div className="auto-container">
           <div className="footer-content" style={{ padding: `25px 0 10px` }}>
             <div className="footer-logo ftr-dsk-lg">
-              <a href="#">
-                <img
-                  src={AmeotechLogo}
-                  alt="Ameotech Logo"
-                />
-              </a>
+
             </div>
-            <ul className="footer-nav ftr-dsk-mn">
+            {/* <ul className="footer-nav ftr-dsk-mn">
               <li>
                 <a href="#">Home</a>
               </li>
@@ -44,7 +39,7 @@ const Footer = () => {
               <li>
                 <a href="#">Contact Us </a>
               </li>
-            </ul>
+            </ul> */}
             <div className="copyright-text">
               {" "}
               &copy; Copyright 2023 All Rights Reserved. BY:{" "}

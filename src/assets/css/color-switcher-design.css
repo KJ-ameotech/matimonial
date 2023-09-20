@@ -51,7 +51,7 @@
 }
 
 .colors-list .active::after{
-    background: url(https://www.matrimonysoftware.in/../images/icons/tick.png) center center no-repeat !important;
+    background: url(../images/icons/tick.png) center center no-repeat !important;
     background-repeat: no-repeat;
     content: '';
     position: absolute;

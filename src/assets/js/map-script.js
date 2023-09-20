@@ -72,7 +72,7 @@ function GmapInit() {
         var image = theme_icon_path;
         
         if( dataContent !== undefined && dataContent !== false ) {
-            contentString = '<div className="map-data">' + '<h6>' + title + '</h6>' + '<div className="map-content">' + dataContent + '</div>' + '</div>';
+            contentString = '<div class="map-data">' + '<h6>' + title + '</h6>' + '<div class="map-content">' + dataContent + '</div>' + '</div>';
         }
         var infowindow = new google.maps.InfoWindow({
             content: contentString

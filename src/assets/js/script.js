@@ -30,7 +30,7 @@
 	
 	//Submenu Dropdown Toggle
 	if($('.main-header li.dropdown ul').length){
-		$('.main-header .navigation li.dropdown').append('<div className="dropdown-btn"><span className="fa fa-angle-down"></span></div>');
+		$('.main-header .navigation li.dropdown').append('<div class="dropdown-btn"><span class="fa fa-angle-down"></span></div>');
 		
 	}
 
@@ -38,7 +38,7 @@
 	if($('.mobile-menu').length){
 		
 		var mobileMenuContent = $('.main-header .nav-outer .main-menu .navigation').html();
-		$('.mobile-menu').append('<div className="close-btn"><span className="icon flaticon-cancel-music"></span></div>');
+		$('.mobile-menu').append('<div class="close-btn"><span class="icon flaticon-cancel-music"></span></div>');
 		$('.mobile-menu .navigation').append(mobileMenuContent);
 		$('.sticky-header .navigation').append(mobileMenuContent);
 		$('.mobile-menu .close-btn').on('click', function() {
@@ -218,7 +218,7 @@
 			autoHeight: true,
 			autoplay: true,
 			autoplayTimeout:5000,
-			navText: [ '<span className="fa fa-angle-left">', '<span className="fa fa-angle-right">' ],
+			navText: [ '<span class="fa fa-angle-left">', '<span class="fa fa-angle-right">' ],
 			responsive:{
 				0:{
 					items:1
@@ -241,7 +241,7 @@
 			nav:true,
 			smartSpeed: 500,
 			autoplay: true,
-			navText: [ '<span className="arrow_carrot-left"></span>', '<span className="arrow_carrot-right"></span>' ],
+			navText: [ '<span class="arrow_carrot-left"></span>', '<span class="arrow_carrot-right"></span>' ],
 			responsive:{
 				0:{
 					items:1
@@ -264,7 +264,7 @@
 			nav:true,
 			smartSpeed: 500,
 			autoplay: true,
-			navText: [ '<span className="arrow_carrot-left"></span>', '<span className="arrow_carrot-right"></span>' ],
+			navText: [ '<span class="arrow_carrot-left"></span>', '<span class="arrow_carrot-right"></span>' ],
 			responsive:{
 				0:{
 					items:1
@@ -294,7 +294,7 @@
 			lazyLoad: true,
 			smartSpeed: 700,
 			autoplay: true,
-			navText: [ '<span className="la la-angle-left"></span>', '<span className="la la-angle-right"></span>' ],
+			navText: [ '<span class="la la-angle-left"></span>', '<span class="la la-angle-right"></span>' ],
 			responsive:{
 				0:{
 					items:1
@@ -448,7 +448,7 @@
 		$('.time-countdown').each(function() {
 		var $this = $(this), finalDate = $(this).data('countdown');
 		$this.countdown(finalDate, function(event) {
-			var $this = $(this).html(event.strftime('' + '<div className="counter-column"><span className="count">%D</span>Days</div> ' + '<div className="counter-column"><span className="count">%H</span>Hours</div>  ' + '<div className="counter-column"><span className="count">%M</span>Minutes</div>  ' + '<div className="counter-column"><span className="count">%S</span>Second</div>'));
+			var $this = $(this).html(event.strftime('' + '<div class="counter-column"><span class="count">%D</span>Days</div> ' + '<div class="counter-column"><span class="count">%H</span>Hours</div>  ' + '<div class="counter-column"><span class="count">%M</span>Minutes</div>  ' + '<div class="counter-column"><span class="count">%S</span>Second</div>'));
 		});
 	 });
 	}
