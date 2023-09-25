@@ -13,7 +13,7 @@ const LookingForModal = ({ setModalShow, modalShow, handleLookingFor, selectedId
                 aria-labelledby="contained-modal-title-vcenter"
                 centered
             >
-                <Modal.Header closeButton />
+                <Modal.Header />
                 <Modal.Body>
                     <div className="modal-body">
                         <div className="text my-4">
@@ -41,7 +41,6 @@ const LookingForModal = ({ setModalShow, modalShow, handleLookingFor, selectedId
                                     </ul>
                                 </div>
                             </>}
-
                     </div>
                 </Modal.Body>
             </Modal>

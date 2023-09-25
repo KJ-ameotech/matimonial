@@ -5,7 +5,7 @@ export const header = (method, data,) => {
         headers: {
             'Content-Type': 'application/json'
         },
-        data: data // Assuming register is a JSON object
+        data: data
     };
     return requestOptions;
 }

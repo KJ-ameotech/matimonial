@@ -5,18 +5,23 @@ import { Link, useNavigate } from 'react-router-dom';
 import Layout from "../../Layout";
 import { loginUser } from '../../Redux/Actions/AuthAction';
 import { toastify } from '../../Utils/Function';
-import { validPassword } from '../../Utils/Validation';
+import { userNameValidation, validEmail, validPassword } from '../../Utils/Validation';
 import { toast } from 'react-toastify';
-import { setLocalStorage } from '../../Utils/LocalStorage';
+import { getLocalStorage, setLocalStorage } from '../../Utils/LocalStorage';
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
 const Login = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const [loginData, setLoginData] = useState({
-        username: "",
-        password: ""
-    })
-    const [error, setError] = useState(false)
     const loginState = useSelector((state) => state)
+    const [loginData, setLoginData] = useState({
+        text: "",
+        password: "",
+    })
+    const [loginResponse, setLoginResponse] = useState(null)
+    const [isLogin, setIslogin] = useState(false)
+    const [error, setError] = useState(false)
+    const [showPassword, setShowPassword] = useState(false)
+
     const { Auth: { loginRequest } } = loginState;
     const handleLoginChange = (e) => {
         const { name, value } = e.target;
@@ -29,14 +34,23 @@ const Login = () => {
     }
     const handleSumbit = (e) => {
         e.preventDefault()
-        if (!!loginData.username?.length && !!loginData.password?.length) {
-            if (validPassword(loginData.password) && loginData.username?.length > 4) {
-
-                dispatch(loginUser(loginData))
-
-                // toastify("Login successfully", "dark")
-                // navigate("/")
+        if (!!loginData.text?.length && !!loginData.password?.length) {
+            if (validEmail(loginData.text)) {
+                let testing = { ...loginData }
+                const obj = { ...testing, email: loginData.text }
+                delete obj.text
+                delete obj.username
+                setLoginData(obj)
+                setIslogin(true)
+            } else if (userNameValidation(loginData.text)) {
+                let testing = { ...loginData }
+                const obj = { ...testing, username: loginData.text }
+                delete obj.text
+                delete obj.email
+                setLoginData(obj)
+                setIslogin(true)
             } else {
+                setIslogin(false)
                 setError(true)
             }
         } else {
@@ -45,23 +59,35 @@ const Login = () => {
         setTimeout(() => setError(false), 5000)
     }
     useEffect(() => {
-        if (loginRequest.status_code == 200) {
+        if (isLogin) {
+            dispatch(loginUser(loginData))
+        }
+    }, [isLogin])
+    const handleShowPassword = () => {
+        setShowPassword(!showPassword)
+    }
+    useEffect(() => {
+        setLoginResponse(loginRequest)
+    }, [loginRequest])
+
+    useEffect(() => {
+        if (loginResponse?.status_code == 200) {
             toastify(toast.success, "Login Successfully", "dark")
-            setTimeout(() => {
-                const { access_token, refresh_token } = loginRequest
-                setLocalStorage("access_token", access_token)
-                setLocalStorage("refresh_token", refresh_token)
-                navigate("/")
-            }, 1000)
+            const { access_token, refresh_token, user_id } = loginResponse
+            setLocalStorage("access_token", access_token)
+            setLocalStorage("refresh_token", refresh_token)
+            setLocalStorage("user_id", user_id)
+            window.location.href = "/"
 
         } else {
-            if (loginRequest?.response?.data?.status_code == 401) {
-                toastify(toast.warning, loginRequest?.response?.data?.detail, "dark")
+            if (loginResponse?.response?.data?.status_code == 401) {
+                toastify(toast.warning, loginResponse?.response?.data?.detail, "dark")
             }
         }
 
-    }, [loginRequest])
+    }, [loginResponse, getLocalStorage("access_token")])
 
+    console.log(loginData, "loginResponse");
     return (
         <div className="login-container mt-5 pt-4">
             <Layout >
@@ -93,26 +119,27 @@ const Login = () => {
                                                     <input
                                                         type="text"
                                                         autofocus
-                                                        placeholder="User Name"
+                                                        placeholder="Enter User Name/Email"
                                                         tabindex="1"
-                                                        required
-                                                        value={loginData.username}
-                                                        name="username"
+                                                        value={loginData.text}
+                                                        name="text"
                                                         onChange={(e) => handleLoginChange(e)} />
-                                                    <p class="form-text " style={{ color: "red" }}>{(!loginData.username.length && error) ? "User Name is Required" : (loginData.username?.length < 4 && error) ? "User Name must be of more than 5 and less than 20 characters." : ""}</p>
+                                                    <p class="form-text " style={{ color: "red" }}>{(!loginData?.text?.length && error) ? "User Name or Email is Required" : (((!validEmail(loginData.email)) || ((!userNameValidation(loginData?.username)))) && error) ? "User Name/Email is not valid" : ""}</p>
                                                 </div>
 
                                                 <div className="col-lg-12 col-md-12 col-sm-12 form-group">
                                                     <input
-                                                        type="password"
+                                                        type={showPassword ? "text" : "password"}
                                                         placeholder="Enter Password"
                                                         maxlength="35"
                                                         id="pass"
+                                                        className='position-relative'
                                                         tabindex="2"
-                                                        required
                                                         value={loginData.password}
                                                         name="password"
                                                         onChange={(e) => handleLoginChange(e)} />
+                                                    {!!loginData.password?.length ? showPassword ? <AiOutlineEyeInvisible onClick={handleShowPassword} className="input_eyes_icon" size={20} /> : <AiOutlineEye onClick={handleShowPassword} className="input_eyes_icon" size={20} /> : null}
+
                                                     <p class="form-text " style={{ color: "red" }}>{(!loginData.password.length && error) ? "Email and Password is Required" : (error && !validPassword(loginData.password)) ? "Input accepts a combination of one uppercase & lowercase letter, number, special characters & minimum characters length 6. Even It will not accept any white spaces." : ""}</p>
                                                 </div>
 

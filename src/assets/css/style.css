@@ -12577,3 +12577,10 @@ input[type=number] {
     top: 50%;
     transform: translate(-50%,-50%);
 }
+.input_eyes_icon{
+	position: absolute;
+	right: 30px;
+	top: 40%;
+	transform: translateY(-50%);
+	cursor: pointer;
+}

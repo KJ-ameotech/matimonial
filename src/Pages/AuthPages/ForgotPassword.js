@@ -1,8 +1,35 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Layout from '../../Layout'
+import { forgetPassword } from '../../Redux/Actions/AuthAction'
+import { toastify } from '../../Utils/Function'
+import { validEmail } from '../../Utils/Validation';
+import { toast } from 'react-toastify';
 
 const ForgotPassword = () => {
+    const dispatch = useDispatch()
+    const [email, setEmail] = useState("")
+    const [error, setError] = useState(false)
+    const emailState = useSelector(state => state)
+    const { Auth: { forgetPasswordRes } } = emailState
+    const handleForgetPassword = (e) => {
+        e.preventDefault()
+        if (validEmail(email)) {
+            dispatch(forgetPassword({ "email": email }))
+        } else {
+            setError(true)
+        }
+    }
+    useEffect(() => {
+        if (forgetPasswordRes?.status === 200) {
+            toastify(toast.success, forgetPasswordRes?.message, "dark")
+        }
+        if (forgetPasswordRes?.response?.data?.status === 404) {
+            toastify(toast.error, "The email does not exist.", "dark")
+        }
+    }, [forgetPasswordRes])
+    console.log(forgetPasswordRes?.response?.data, "emailState");
     return (
         <Layout>
             <section className="newsletter-section" style={{ padding: "150px 0" }}>
@@ -22,11 +49,12 @@ const ForgotPassword = () => {
                                         <div className="text">Please enter your email address to search for your account..</div>
                                     </div>
 
-                                    <form method="post" action="login_submit.php" className="form" id="contact-form">
+                                    <form method="post" action="login_submit.php" className="form" id="contact-form" onSubmit={handleForgetPassword}>
                                         <div className="row clearfix">
 
                                             <div className="col-lg-12 col-md-12 col-sm-12 form-group" id="emailerror">
-                                                <input type="text" autofocus name="txtusername" placeholder="Email ID " tabindex="1" required value="" />
+                                                <input type="text" autofocus name="txtusername" placeholder="Email ID " tabindex="1" required value={email} onChange={(e) => setEmail(e.target.value)} />
+                                                <p className="form-text " style={{ color: "red" }}>{(!email.length && error) ? "Email is Required" : (!validEmail(email) && error) ? "Input Field accepts only valid email format string with @ symbol" : ""}</p>
                                             </div>
                                             <div className="col-lg-12 col-md-12 col-sm-12 mt-3 ">
                                                 <div className="btn-box">

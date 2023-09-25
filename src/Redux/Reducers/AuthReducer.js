@@ -1,5 +1,5 @@
 import { setLocalStorage } from "../../Utils/LocalStorage"
-import { LOGIN_FAILURE, LOGIN_REQUEST, LOGIN_SUCCESS, REGISTER_FAILURE, REGISTER_REQUEST, REGISTER_SUCCESS, RELIGION_FAILURE, RELIGION_REQUEST, RELIGION_SUCCESS } from "../Constants"
+import { COMMUNITIES_FAILURE, COMMUNITIES_REQUEST, COMMUNITIES_SUCCESS, FORGOTPASSWORD_FAILURE, FORGOTPASSWORD_REQUEST, FORGOTPASSWORD_SUCCESS, LOGIN_FAILURE, LOGIN_REQUEST, LOGIN_SUCCESS, REGISTER_FAILURE, REGISTER_REQUEST, REGISTER_SUCCESS, RELIGION_FAILURE, RELIGION_REQUEST, RELIGION_SUCCESS } from "../Constants"
 
 let initialState = {
     registrationRequest: "",
@@ -8,6 +8,10 @@ let initialState = {
     loginLoading: false,
     religionData: "",
     religionLoading: false,
+    forgetPasswordRes: "",
+    forgetPasswordloading: false,
+    communitiesData: [],
+    communitiesDataloading: false
 }
 const AuthReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -64,6 +68,41 @@ const AuthReducer = (state = initialState, action) => {
                 ...state,
                 religionLoading: false,
                 religionData: action.payload,
+            }
+        case FORGOTPASSWORD_REQUEST:
+            return {
+                ...state,
+                forgetPasswordloading: true,
+            }
+        case FORGOTPASSWORD_SUCCESS:
+
+            return {
+                ...state,
+                forgetPasswordloading: false,
+                forgetPasswordRes: action.payload,
+            }
+        case FORGOTPASSWORD_FAILURE:
+            return {
+                ...state,
+                forgetPasswordloading: false,
+                forgetPasswordRes: action.payload,
+            }
+        case COMMUNITIES_REQUEST:
+            return {
+                ...state,
+                communitiesDataloading: true,
+            }
+        case COMMUNITIES_SUCCESS:
+            return {
+                ...state,
+                communitiesDataloading: false,
+                communitiesData: [...action.payload],
+            }
+        case COMMUNITIES_FAILURE:
+            return {
+                ...state,
+                communitiesDataloading: false,
+                communitiesData: action.payload,
             }
 
         default:

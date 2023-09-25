@@ -3,13 +3,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import LookingForModal from '../../components/SignupModal/LookingForModal';
 import SignUpModal from '../../components/SignupModal/SignUpModal';
 import Layout from '../../Layout'
-import { getReligion, registerUser } from '../../Redux/Actions/AuthAction';
-import { validEmail, validPassword } from '../../Utils/Validation';
-
+import { getCommunities, getReligion, registerUser } from '../../Redux/Actions/AuthAction';
+import { userNameValidation, validEmail, validPassword } from '../../Utils/Validation';
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
 import { toastify } from '../../Utils/Function';
 import { toast } from 'react-toastify';
 
 const SignUp = () => {
+    const religionState = useSelector(state => state)
+    const { Auth: { religionData, communitiesData } } = religionState
     const dispatch = useDispatch()
     const [register, setRegister] = useState({
         profile_for: "",
@@ -26,15 +28,26 @@ const SignUp = () => {
         mobile_number: "",
         gender: ""
     })
+    const [dateOfBirth, setDateOfBirth] = useState({
+        dob: "",
+        dobYear: "",
+        dobMonth: "",
+    })
     const [modalShow, setModalShow] = useState(false);
     const [lookingForModal, setLookingForModal] = useState(false)
     const [error, setError] = useState(false)
     const [years, setYears] = useState([])
     const [selectedId, setSelectedId] = useState('')
+    const [showPassword, setShowPassword] = useState(false)
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false)
     const reducerData = useSelector(state => state)
-    const { Auth: { registrationRequest } } = reducerData
+    const { Auth: { registrationRequest } } = reducerData;
     const handleRegister = (e) => {
-        const { name, value, id } = e.target;
+        const { name, value } = e.target;
+        if (name === "religion") {
+            const item = religionData?.filter(item => item.name === value)[0]
+            dispatch(getCommunities(item.id))
+        }
         setRegister((prev) => {
             return {
                 ...prev,
@@ -45,7 +58,7 @@ const SignUp = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         if (!!register.email?.length && !!register.password?.length && register.community && register.confirm_password && register.living_in && register.mobile_number && register.password && register.religion && register.username) {
-            if (!validEmail(register.email) && !validPassword(register.password) && register.mobile_number?.length !== 10) {
+            if (!validEmail(register.email) && !validPassword(register.password) && register.mobile_number?.length !== 10 && !userNameValidation(register.username)) {
                 setError(true)
             } else {
                 if (!validEmail(register.email)) {
@@ -54,9 +67,15 @@ const SignUp = () => {
                     setError(true)
                 } else if (register.mobile_number?.length !== 10) {
                     setError(true)
+                } else if (!userNameValidation(register.username)) {
+                    setError(true)
                 } else {
                     dispatch(registerUser(register))
-                    toastify(toast, "Welcome, your account is successfully registered", "dark")
+                    // .then((res) => {
+                    //     console.log(res, "resssssssss")
+                    //     toastify(toast, "Welcome, your account is successfully registered", "dark")
+                    // })
+
                 }
             }
         } else {
@@ -79,10 +98,20 @@ const SignUp = () => {
         setModalShow(true)
         setLookingForModal(false)
     }
+    const handleShowPassword = (data) => {
+        if (data === "password") {
+            setShowPassword(!showPassword)
+        } else {
+            setShowConfirmPassword(!showConfirmPassword)
+
+        }
+    }
     useEffect(() => {
         if (register.dob && register.dobMonth && register.dobYear) {
             let obj = { ...register }
             let newObj = { ...register, date_of_birth: obj.dobYear + "-" + obj.dobMonth + "-" + obj.dob }
+            delete newObj.dobMonth
+            setDateOfBirth({ ...dateOfBirth, dob: register.dob, dobMonth: register.dobMonth, dobYear: register.dobYear })
             delete newObj.dob
             delete newObj.dobMonth
             delete newObj.dobYear
@@ -112,6 +141,40 @@ const SignUp = () => {
         }
         setYears(years)
     }, [register.gender])
+    useEffect(() => {
+        let res = registrationRequest?.response?.data;
+        if (res) {
+            if (res?.status_code === 400) {
+                toastify(toast.error, res?.error, "dark")
+            }
+        }
+        else if (registrationRequest?.status_code === 201) {
+            toastify(toast.success, registrationRequest?.message, "dark")
+            setRegister({
+                profile_for: "",
+                dob: "",
+                dobYear: "",
+                dobMonth: "",
+                religion: "",
+                community: "",
+                living_in: "",
+                username: "",
+                email: "",
+                password: "",
+                confirm_password: "",
+                mobile_number: "",
+                gender: ""
+            })
+            setDateOfBirth({
+                dob: "",
+                dobYear: "",
+                dobMonth: "",
+            })
+        }
+
+    }, [registrationRequest])
+
+
     return (
         <div>
             <Layout >
@@ -150,10 +213,8 @@ const SignUp = () => {
                                                 <div className="row clearfix">
                                                     <div className="col-lg-12 col-md-12 col-sm-12 form-group">
                                                         <input type="text" name="username" placeholder="User Name" maxlength="20" value={register.username} onChange={(e) => handleRegister(e)} />
-                                                        <p className="form-text " style={{ color: "red" }}>{(!register.username.length && error) ? "User Name is Required" : (register.username.length < 4 && error) ? "User Name must be of more than 5 and less than 20 characters." : ""}</p>
+                                                        <p className="form-text " style={{ color: "red" }}>{(!register.username.length && error) ? "User Name is Required" : (!userNameValidation(register.username) && error) ? "Please use only letter (a-z), numbers and periods and user-name must be a minimum 5 letters." : ""}</p>
                                                     </div>
-
-
                                                     <div className="col-lg-12 col-md-12 col-sm-12 form-group mt-3" id="emailerror">
                                                         <input type="email" autofocus name="email" placeholder="Email ID." value={register.email} onChange={(e) => handleRegister(e)} />
                                                         <p className="form-text " style={{ color: "red" }}>{(!register.email.length && error) ? "Email is Required" : (!validEmail(register.email) && error) ? "Input Field accepts only valid email format string with @ symbol" : ""}</p>
@@ -166,6 +227,7 @@ const SignUp = () => {
                                                         <div className="mt-2 "></div>
 
                                                     </div>
+
                                                     <div className="col-lg-4 col-md-4 col-sm-12 form-group ">
                                                         <select className="custom-select-box" name="dobMonth" tabindex="7" id="month" onChange={(e) => handleRegister(e, 'dob')}>
                                                             <option value="" disabled selected hidden>Birth Month</option>
@@ -182,7 +244,7 @@ const SignUp = () => {
                                                             <option value="11">November</option>
                                                             <option value="12">December</option>
                                                         </select>
-                                                        <p className="form-text " style={{ color: "red" }}>{(!register?.date_of_birth && error) ? "Please select the Birth Month" : ""}</p>
+                                                        <p className="form-text " style={{ color: "red" }}>{(!dateOfBirth?.dobMonth && error) ? "Please select the Birth Month" : ""}</p>
                                                     </div>
 
                                                     <div className="col-lg-4 col-md-4 col-sm-12 form-group " onChange={(e) => handleRegister(e, "dob")}>
@@ -193,28 +255,32 @@ const SignUp = () => {
                                                                 return <option value="1">{i}</option>
                                                             })}
                                                         </select>
-                                                        <p className="form-text " style={{ color: "red" }}>{(!register?.date_of_birth && error) ? "Please select the Birth Day" : ""}</p>
+                                                        <p className="form-text " style={{ color: "red" }}>{(!dateOfBirth?.dob && error) ? "Please select the Birth Day" : ""}</p>
                                                     </div>
 
                                                     <div className="col-lg-4 col-md-4 col-sm-12 form-group ">
-                                                        <select name="dobYear" className="custom-select-box" tabindex="9" id="year" onChange={(e) => handleRegister(e,)} required>
+                                                        <select name="dobYear" className="custom-select-box" tabindex="9" id="year" onChange={(e) => handleRegister(e,)}>
                                                             <option value="" disabled selected hidden>Birth Year</option>
                                                             {years.map((o) => {
                                                                 return <option value={o} >{o}</option>
                                                             })}
                                                         </select>
-                                                        <p className="form-text " style={{ color: "red" }}>{(!register.date_of_birth && error) ? "Please select the Birth Year" : ""}</p>
+                                                        <p className="form-text " style={{ color: "red" }}>{(!dateOfBirth.dobYear && error) ? "Please select the Birth Year" : ""}</p>
 
                                                     </div>
                                                     <div className="col-lg-12 col-md-12 col-sm-12 form-group">
-                                                        <input type="password" name="password" placeholder="Password" maxlength="35" onChange={(e) => handleRegister(e)} />
+                                                        <input type={showPassword ? "text" : "password"} name="password" placeholder="Password" className='position-relative' maxlength="35" value={register.password} onChange={(e) => handleRegister(e)} />
+                                                        {!!register.password?.length ? showPassword ? <AiOutlineEyeInvisible onClick={() => handleShowPassword("password")} className="input_eyes_icon" size={20} /> : <AiOutlineEye onClick={() => handleShowPassword("password")} className="input_eyes_icon" size={20} /> : null}
                                                         <p className="form-text " style={{ color: "red" }}>{(!register.password.length && error) ? " Password is Required" : (error && !validPassword(register.password)) ? "Input accepts a combination of one uppercase & lowercase letter, number, special characters & minimum characters length 8. Even It will not accept any white spaces." : ""}</p>
 
                                                         <div className="mt-2 " style={{ display: "none" }}>Password is too weak</div>
                                                     </div>
                                                     <div className="col-lg-12 col-md-12 col-sm-12 form-group">
-                                                        <input type="password" name="confirm_password" placeholder=" Confirm password" maxlength="35" onChange={(e) => handleRegister(e)} />
-                                                        <p className="form-text " style={{ color: "red" }}>{(!register.password.length && error) ? " Confirm Password is Required" : (error && register.password != register.confirm_password) ? "Input Field must be matched with the values of password input Field" : ""}</p>
+                                                        <input type={showConfirmPassword ? "text" : "password"} name="confirm_password" placeholder=" Confirm password" maxlength="35" value={register.confirm_password} onChange={(e) => handleRegister(e)} />
+                                                        {!!register.confirm_password?.length ? showPassword ? <AiOutlineEyeInvisible onClick={handleShowPassword} className="input_eyes_icon" size={20} /> : <AiOutlineEye onClick={handleShowPassword} className="input_eyes_icon" size={20} /> : null}
+                                                        <p className="form-text " style={{ color: "red" }}>{(!register.confirm_password.length && error) ? " Confirm Password is Required" : (error && register.password != register.confirm_password) ? "Input Field must be matched with the values of password input Field" : ""}</p>
+
+
 
                                                         <div className="mt-2 " style={{ display: "none" }}>Password is too weak</div>
                                                     </div>
@@ -233,7 +299,7 @@ const SignUp = () => {
                             </div>
                         </div>
                     </section >
-                    <SignUpModal setModalShow={setModalShow} modalShow={modalShow} handleRegister={handleRegister} />
+                    <SignUpModal setModalShow={setModalShow} modalShow={modalShow} handleRegister={handleRegister} religionData={religionData} communitiesData={communitiesData} />
                     <LookingForModal setModalShow={setLookingForModal} modalShow={lookingForModal} handleLookingFor={(item) => handleLookingFor(item)} selectedId={selectedId} handleGender={handleGender} />
                 </div>
             </Layout >
