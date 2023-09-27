@@ -23,6 +23,21 @@ export const toastify = (cb, text, theme) => {
     });
 }
 
+export const calculateAge = (dateOfBirth) => {
+    const dob = new Date(dateOfBirth);
+    const currentDate = new Date();
+    const yearsDiff = currentDate.getFullYear() - dob.getFullYear();
+    if (
+        currentDate.getMonth() < dob.getMonth() ||
+        (currentDate.getMonth() === dob.getMonth() && currentDate.getDate() < dob.getDate())
+    ) {
+        return yearsDiff - 1
+    } else {
+        return yearsDiff
+
+    }
+};
+
 
 
 

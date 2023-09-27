@@ -18,7 +18,6 @@ const Login = () => {
         password: "",
     })
     const [loginResponse, setLoginResponse] = useState(null)
-    const [isLogin, setIslogin] = useState(false)
     const [error, setError] = useState(false)
     const [showPassword, setShowPassword] = useState(false)
 
@@ -34,23 +33,14 @@ const Login = () => {
     }
     const handleSumbit = (e) => {
         e.preventDefault()
-        if (!!loginData.text?.length && !!loginData.password?.length) {
+        if (((!!loginData.text?.length) && !!loginData.password?.length)) {
             if (validEmail(loginData.text)) {
-                let testing = { ...loginData }
-                const obj = { ...testing, email: loginData.text }
-                delete obj.text
-                delete obj.username
-                setLoginData(obj)
-                setIslogin(true)
+                const obj = { email: loginData.text, password: loginData.password }
+                dispatch(loginUser(obj))
             } else if (userNameValidation(loginData.text)) {
-                let testing = { ...loginData }
-                const obj = { ...testing, username: loginData.text }
-                delete obj.text
-                delete obj.email
-                setLoginData(obj)
-                setIslogin(true)
+                const obj = { username: loginData.text, password: loginData.password }
+                dispatch(loginUser(obj))
             } else {
-                setIslogin(false)
                 setError(true)
             }
         } else {
@@ -58,14 +48,7 @@ const Login = () => {
         }
         setTimeout(() => setError(false), 5000)
     }
-    useEffect(() => {
-        if (isLogin) {
-            dispatch(loginUser(loginData))
-        }
-    }, [isLogin])
-    const handleShowPassword = () => {
-        setShowPassword(!showPassword)
-    }
+
     useEffect(() => {
         setLoginResponse(loginRequest)
     }, [loginRequest])
@@ -78,16 +61,15 @@ const Login = () => {
             setLocalStorage("refresh_token", refresh_token)
             setLocalStorage("user_id", user_id)
             window.location.href = "/"
-
         } else {
             if (loginResponse?.response?.data?.status_code == 401) {
                 toastify(toast.warning, loginResponse?.response?.data?.detail, "dark")
+                setLoginData({ ...loginData, text: "", password: "" })
             }
         }
-
     }, [loginResponse, getLocalStorage("access_token")])
 
-    console.log(loginData, "loginResponse");
+
     return (
         <div className="login-container mt-5 pt-4">
             <Layout >
@@ -124,7 +106,7 @@ const Login = () => {
                                                         value={loginData.text}
                                                         name="text"
                                                         onChange={(e) => handleLoginChange(e)} />
-                                                    <p class="form-text " style={{ color: "red" }}>{(!loginData?.text?.length && error) ? "User Name or Email is Required" : (((!validEmail(loginData.email)) || ((!userNameValidation(loginData?.username)))) && error) ? "User Name/Email is not valid" : ""}</p>
+                                                    <p class="form-text " style={{ color: "red" }}>{(!loginData?.text?.length && error) ? "User Name or Email is Required" : (((!validEmail(loginData.text)) || ((!userNameValidation(loginData?.text)))) && error) ? "User Name/Email is not valid" : ""}</p>
                                                 </div>
 
                                                 <div className="col-lg-12 col-md-12 col-sm-12 form-group">
@@ -138,7 +120,7 @@ const Login = () => {
                                                         value={loginData.password}
                                                         name="password"
                                                         onChange={(e) => handleLoginChange(e)} />
-                                                    {!!loginData.password?.length ? showPassword ? <AiOutlineEyeInvisible onClick={handleShowPassword} className="input_eyes_icon" size={20} /> : <AiOutlineEye onClick={handleShowPassword} className="input_eyes_icon" size={20} /> : null}
+                                                    {!!loginData.password?.length ? showPassword ? <AiOutlineEyeInvisible onClick={() => setShowPassword(!showPassword)} className="input_eyes_icon" size={20} /> : <AiOutlineEye onClick={() => setShowPassword(!showPassword)} className="input_eyes_icon" size={20} /> : null}
 
                                                     <p class="form-text " style={{ color: "red" }}>{(!loginData.password.length && error) ? "Email and Password is Required" : (error && !validPassword(loginData.password)) ? "Input accepts a combination of one uppercase & lowercase letter, number, special characters & minimum characters length 6. Even It will not accept any white spaces." : ""}</p>
                                                 </div>

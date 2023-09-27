@@ -22,7 +22,7 @@ const Navbar = ({ auth }) => {
       <div className="main-box" >
         <div className="auto-container clearfix" >
           <div className="logo-box" onClick={() => navigate("/")}>
-            <div className="logo"><h6>Ameotech</h6></div>
+            <div class="logo"><img src="/assets/images/mainlogo.png" /></div>
           </div>
           <div className="nav-outer clearfix">
             <div className="mobileapp_Icon1">

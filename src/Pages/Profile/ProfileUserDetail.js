@@ -12,11 +12,7 @@ import { header, toastify } from '../../Utils/Function';
 import axios from 'axios';
 const ProfileUserDetail = () => {
     const dispatch = useDispatch()
-
-
     const [profileData, setProfileData] = useState({
-        first_name: "",
-        last_name: "",
         height: "",
         weight: "",
         marital_status: "",
@@ -26,7 +22,8 @@ const ProfileUserDetail = () => {
         about_me: "",
         occupation: "",
         user: +getLocalStorage("user_id"),
-        income: 10000
+        income: "",
+        education: ""
 
     })
     const [hobbies, setHobbies] = useState('')
@@ -44,8 +41,7 @@ const ProfileUserDetail = () => {
     }
     const handleProfleInfo = (e) => {
         e.preventDefault()
-        if (!!profileData.first_name?.length &&
-            !!profileData.last_name?.length &&
+        if (
             !!(profileData.height + "")?.length
             && !!(profileData.weight + "").length
             && !!profileData.about_me?.length
@@ -53,10 +49,9 @@ const ProfileUserDetail = () => {
             && !!profileData.headline?.length
             && !!profileData.marital_status?.length
             && !!profileData.occupation?.length &&
-            !!profileData.profile_picture) {
-            if (firstNameAndLastNameValidation(profileData.first_name) &&
-                firstNameAndLastNameValidation(profileData.first_name) &&
-                (profileData.height + "")?.length > 1
+            !!profileData.education?.length &&
+            !!profileData.income?.length) {
+            if ((profileData.height + "")?.length > 1
                 && (profileData.weight + "")?.length > 1
                 && profileData.about_me?.length > 4
                 && profileData.caste?.length > 4
@@ -82,9 +77,6 @@ const ProfileUserDetail = () => {
             imageType === "JPG" ||
             imageType === "gif") {
             let image = files[0]
-            const formData = new FormData();
-            formData.append('image', image);
-            formData.append("user", getLocalStorage("user_id"))
             dispatch(uploadProfileImage(image))
             setFile(URL.createObjectURL(image));
 
@@ -101,13 +93,12 @@ const ProfileUserDetail = () => {
         }
     }
 
-
     useEffect(() => {
         const obj = { ...hobbiesList }
         setProfileData({ ...profileData, hobbies: { ...obj } })
     }, [hobbiesList])
 
-    console.log(profileData, "profileData");
+    console.log(getLocalStorage("user_id"), "profileData");
     return (
         <Layout>
             <div className='user_profile' style={{ padding: "100px 0" }}>
@@ -131,24 +122,15 @@ const ProfileUserDetail = () => {
 
                         <form method="post" action="emailsend" id="contact-form" onSubmit={(e) => handleProfleInfo(e)} encType="multipart/form-data">
                             <div className="row clearfix">
-                                <div className="col-lg-6 col-md-6 col-sm-12 form-group">
-                                    <input type="text" maxlength="40" name="first_name" placeholder="First Name" tabindex="1" onChange={(e) => handleProfilePersonalInfo(e)} />
-                                    <p className="form-text " style={{ color: "red" }}>{(!profileData.first_name?.length && error) ? "First Name is Required" : (!firstNameAndLastNameValidation(profileData.first_name) && error) ? "The First Name must be the only letter that may be in uppercase or lowercase and minimum characters length 4." : ""}</p>
-                                </div>
-
-                                <div className="col-lg-6 col-md-6 col-sm-12 form-group">
-                                    <input type="text" maxlength="10" name="last_name" placeholder="Last Name" tabindex="2" onChange={(e) => handleProfilePersonalInfo(e)} />
-                                    <p className="form-text " style={{ color: "red" }}>{(!profileData.last_name?.length && error) ? "First Name is Required" : (!firstNameAndLastNameValidation(profileData.last_name) && error) ? "The Last Name must be the only letter that may be in uppercase or lowercase and minimum characters length 4." : ""}</p>
-                                </div>
 
                                 <div className="col-lg-6 col-md-6 col-sm-12 form-group">
                                     <input type="number" maxlength="35" placeholder="Height" name="height" tabindex="3" onChange={(e) => handleProfilePersonalInfo(e)} />
-                                    <p className="form-text " style={{ color: "red" }}>{(!profileData.height && error) ? "Height is Required" : (profileData.height < 2 && error) ? "Invalid Height." : ""}</p>
+                                    <p className="form-text " style={{ color: "red" }}>{(!profileData.height && error) ? "Height is Required" : ((profileData.height + "")?.length == 1 && error) ? "Invalid Height." : ""}</p>
                                 </div>
 
                                 <div className="col-lg-6 col-md-6 col-sm-12 form-group">
                                     <input type="number" name="weight" maxlength="70" placeholder="Weight" tabindex="4" onChange={(e) => handleProfilePersonalInfo(e)} />
-                                    <p className="form-text " style={{ color: "red" }}>{(!profileData.weight && error) ? "Weight is Required" : (profileData.weight < 2 && error) ? "Invalid Weight." : ""}</p>
+                                    <p className="form-text " style={{ color: "red" }}>{(!profileData.weight && error) ? "Weight is Required" : ((profileData.weight + "").length == 1 && error) ? "Invalid Weight." : ""}</p>
                                 </div>
                                 <div className="col-lg-12 col-md-12 col-sm-12 form-group">
                                     <select className="custom-select-box" name="marital_status" tabindex="7" id="MaritalStatus" onChange={(e) => handleProfilePersonalInfo(e)}>
@@ -178,6 +160,14 @@ const ProfileUserDetail = () => {
                                 <div className="col-lg-12 col-md-12 col-sm-12 form-group">
                                     <input type="text" name="occupation" maxlength="70" placeholder="Occupation" tabindex="4" onChange={(e) => handleProfilePersonalInfo(e)} />
                                     <p className="form-text " style={{ color: "red" }}>{(!profileData.occupation.length && error) ? "Occupation is Required" : (profileData.occupation.length < 5 && error) ? "Invalid Occupation." : ""}</p>
+                                </div>
+                                <div className="col-lg-12 col-md-12 col-sm-12 form-group">
+                                    <input type="text" name="education" maxlength="70" placeholder="Education" tabindex="4" onChange={(e) => handleProfilePersonalInfo(e)} />
+                                    <p className="form-text " style={{ color: "red" }}>{(!profileData.education.length && error) ? "education is Required" : ""}</p>
+                                </div>
+                                <div className="col-lg-12 col-md-12 col-sm-12 form-group">
+                                    <input type="number" name="income" maxlength="70" placeholder="Income" tabindex="4" onChange={(e) => handleProfilePersonalInfo(e)} />
+                                    <p className="form-text " style={{ color: "red" }}>{(!profileData.income.length && error) ? "income is Required" : ""}</p>
                                 </div>
                                 <div className="col-lg-12 col-md-12 col-sm-12 form-group">
                                     <textarea name="about_me" maxlength="250" placeholder="About me" tabindex="5" onChange={(e) => handleProfilePersonalInfo(e)}></textarea>

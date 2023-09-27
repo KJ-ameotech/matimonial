@@ -12,9 +12,12 @@ const ConfirmPassword = lazy(() => import("../Pages/AuthPages/ConfirmPassword"))
 const AboutUs = lazy(() => import('../Pages/About/AboutUs'))
 const Contactus = lazy(() => import('../Pages/ContactUs'))
 const ProfileUserDetail = lazy(() => import('../Pages/Profile/ProfileUserDetail'))
+const LikeDislikeCard = lazy(() => import('../components/LikeDislikeCard'))
+const Chat = lazy(() => import('../Pages/chat'))
 const AppRoutes = ({ auth }) => {
     return (
         <Routes>
+            {/* private routes start here*/}
             <Route path="/profile"
                 Component={(props) => auth ? (<Suspense fallback={<Loading />}><Profile {...props} /> </Suspense>) : (
                     <Navigate to="/login" replace />)} />
@@ -22,8 +25,17 @@ const AppRoutes = ({ auth }) => {
                 Component={(props) => auth ? (
                     <Suspense fallback={<Loading />}><ProfileUserDetail {...props} /> </Suspense>) : (
                     <Navigate to="/login" replace />)} />
+            <Route path="/searchprofiles"
+                Component={(props) => auth ? (
+                    <Suspense fallback={<Loading />}><LikeDislikeCard {...props} /> </Suspense>) : (
+                    <Navigate to="/login" replace />)} />
+            <Route path="/chat"
+                Component={(props) => auth ? (
+                    <Suspense fallback={<Loading />}><Chat {...props} /> </Suspense>) : (
+                    <Navigate to="/login" replace />)} />
+            {/* private routes end here*/}
 
-
+            {/* unauthorized routes start here */}
             <Route path="/login"
                 Component={(props) => !auth ? (
                     <Suspense fallback={<Loading />}><Login  {...props} /></Suspense>) : (
@@ -44,20 +56,18 @@ const AppRoutes = ({ auth }) => {
                 Component={(props) => !auth ? (<Suspense fallback={<Loading />}><SignUp  {...props} /></Suspense>) : (
                     <Navigate to="/" replace />)}
             />
+            {/* unauthorized routes start here */}
 
+            {/* public  routes start here*/}
             <Route path="/contact-us" element={<Suspense fallback={<Loading />}><Contactus /></Suspense>} />
+            {/* <Route path="/card" element={<Suspense fallback={<Loading />}><LikeDislikeCard /></Suspense>} /> */}
             <Route path="/" element={<Suspense fallback={<Loading />}><Feed /></Suspense>} />
             <Route path="/membership" element={<Suspense fallback={<Loading />}><MemberShip /></Suspense>} />
             <Route path="/about" element={<Suspense fallback={<Loading />}><AboutUs /></Suspense>} />
             <Route path="*" element={<Navigate to="/" replace />} />
+            {/* public  routes end here*/}
 
 
-            {/* <Route path="/" element={<Suspense fallback={<Loading />}><Feed /></Suspense>} />
-    <Route path="/login" element={<Suspense fallback={<Loading />}><Login /></Suspense>} />
-    <Route path="/forgot-password" element={<Suspense fallback={<Loading />}><ForgotPassword /></Suspense>} />
-    <Route path="/reset-password" element={<Suspense fallback={<Loading />}><ConfirmPassword /></Suspense>} />
-    <Route path="/signup" element={<Suspense fallback={<Loading />}><SignUp /></Suspense>} />
-    <Route path="/membership" element={<Suspense fallback={<Loading />}><MemberShip /></Suspense>} /> */}
         </Routes>
     )
 }

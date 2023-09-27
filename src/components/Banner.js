@@ -3,14 +3,20 @@ import image1 from "../assets/images/main-slider/1.jpg"
 import "../../src/assets/css/owl.css"
 // import "./banner.css"
 import OwlCarousel from 'react-owl-carousel';
+import { getSearchProfileUser } from "../Redux/Actions/ProfileActions";
+import { useDispatch } from "react-redux";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Banner = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
   const [searchData, setSearchData] = useState({
     looking_for: "",
     from_age: "",
     to_age: "",
     religion: ""
   })
+  // const [error, setError] = useState(false)
   const options = {
     loop: true,
     margin: 10,
@@ -42,37 +48,44 @@ const Banner = () => {
     })
   }
 
+  const handleSearchSubmit = (e) => {
+    e.preventDefault()
+    if (searchData.from_age && searchData.to_age && searchData.looking_for && searchData.religion) {
+      const quary = `?age_from=${searchData.from_age}&age_to=${searchData.to_age}&gender=${searchData.looking_for}&religion=${searchData.religion}`
+      dispatch(getSearchProfileUser(quary))
+      navigate("/searchprofiles")
+    }
 
-  console.log(searchData, "searchData");
+  }
   return (
     <>
-      <div class="mainBannerSection">
-        <section class="banner-section d-none d-lg-block d-xl-block d-md-block mobile_Hidden">
-          <div class="banner-carousel owl-carousel owl-theme ">
-            <OwlCarousel className="owl-theme" {...options}>
-              <div class="slide-item" style={{ backgroundImage: `url(${image1})` }}>
-                <div class="auto-container">
-                  <div class="content-box mt-5">
+      <div className="mainBannerSection">
+        <section className="banner-section d-none d-lg-block d-xl-block d-md-block mobile_Hidden">
+          <div className="banner-carousel owl-carousel owl-theme ">
+            <OwlCarousel classNameName="owl-theme" {...options}>
+              <div className="slide-item" style={{ backgroundImage: `url(${image1})` }}>
+                <div className="auto-container">
+                  <div className="content-box mt-5">
 
                     <h2> Someone Special is <br />Waiting For You</h2>
-                    <ul class="info-list">
-                      <li><span class="icon fas fa-edit"></span> Sign Up</li>
-                      <li><span class="icon fas fa-user-plus"></span> Connect</li>
-                      <li><span class="icon fas fa-comments"></span> Interact</li>
+                    <ul className="info-list">
+                      <li><span className="icon fas fa-edit"></span> Sign Up</li>
+                      <li><span className="icon fas fa-user-plus"></span> Connect</li>
+                      <li><span className="icon fas fa-comments"></span> Interact</li>
                     </ul>
 
                   </div>
                 </div>
               </div>
-              <div class="slide-item" style={{ backgroundImage: `url(${image1})` }}>
-                <div class="auto-container">
-                  <div class="content-box mt-5">
+              <div className="slide-item" style={{ backgroundImage: `url(${image1})` }}>
+                <div className="auto-container">
+                  <div className="content-box mt-5">
 
                     <h2> Find  Your Prefect <br />Match Here!!!</h2>
-                    <ul class="info-list">
-                      <li><span class="icon fas fa-edit"></span> Sign Up</li>
-                      <li><span class="icon fas fa-user-plus"></span> Connect</li>
-                      <li><span class="icon fas fa-comments"></span> Interact</li>
+                    <ul className="info-list">
+                      <li><span className="icon fas fa-edit"></span> Sign Up</li>
+                      <li><span className="icon fas fa-user-plus"></span> Connect</li>
+                      <li><span className="icon fas fa-comments"></span> Interact</li>
                     </ul>
 
                   </div>
@@ -81,32 +94,32 @@ const Banner = () => {
             </OwlCarousel>
           </div>
         </section>
-        <section class="banner-section d-block d-lg-none d-xl-none d-md-none mobile_Hidden">
-          <div class="banner-carousel owl-carousel owl-theme banner-carousel-two">
-            <OwlCarousel className="owl-theme" {...options}>
-              <div class="slide-item" style={{ backgroundImage: `url(${image1})` }}>
-                <div class="auto-container">
-                  <div class="content-box mt-5">
+        <section className="banner-section d-block d-lg-none d-xl-none d-md-none mobile_Hidden">
+          <div className="banner-carousel owl-carousel owl-theme banner-carousel-two">
+            <OwlCarousel classNameName="owl-theme" {...options}>
+              <div className="slide-item" style={{ backgroundImage: `url(${image1})` }}>
+                <div className="auto-container">
+                  <div className="content-box mt-5">
 
                     <h2> Someone Special is <br />Waiting For You</h2>
-                    <ul class="info-list">
-                      <li><span class="icon fas fa-edit"></span> Sign Up</li>
-                      <li><span class="icon fas fa-user-plus"></span> Connect</li>
-                      <li><span class="icon fas fa-comments"></span> Interact</li>
+                    <ul className="info-list">
+                      <li><span className="icon fas fa-edit"></span> Sign Up</li>
+                      <li><span className="icon fas fa-user-plus"></span> Connect</li>
+                      <li><span className="icon fas fa-comments"></span> Interact</li>
                     </ul>
 
                   </div>
                 </div>
               </div>
-              <div class="slide-item" style={{ backgroundImage: `url(${image1})` }}>
-                <div class="auto-container">
-                  <div class="content-box mt-5">
+              <div className="slide-item" style={{ backgroundImage: `url(${image1})` }}>
+                <div className="auto-container">
+                  <div className="content-box mt-5">
 
                     <h2> Find  Your Prefect <br />Match Here!!!</h2>
-                    <ul class="info-list">
-                      <li><span class="icon fas fa-edit"></span> Sign Up</li>
-                      <li><span class="icon fas fa-user-plus"></span> Connect</li>
-                      <li><span class="icon fas fa-comments"></span> Interact</li>
+                    <ul className="info-list">
+                      <li><span className="icon fas fa-edit"></span> Sign Up</li>
+                      <li><span className="icon fas fa-user-plus"></span> Connect</li>
+                      <li><span className="icon fas fa-comments"></span> Interact</li>
                     </ul>
 
                   </div>
@@ -121,23 +134,24 @@ const Banner = () => {
           </div>
         </section>
       </div>
-      <section class="coming-soon-section">
-        <div class="auto-container mb-5">
-          <div class="outer-box">
-            <div class="time-counter">
-              <div class="col-md-12">
-                <div class="row">
-                  <form action="front_search_result?page=1" class="form-inline" method="post">
-                    <div class="col-lg-3 col-md-3 col-sm-3 form-group">
-                      <label class="label" for="lookingfor"><span class="search">I'm looking for a</span></label>
-                      <select class="dropselect" name="looking_for" value={searchData.looking_for} selected tabindex="1" onChange={handleSearch} >
+      <section className="coming-soon-section">
+        <div className="auto-container mb-5">
+          <div className="outer-box">
+            <div className="time-counter">
+              <div className="col-md-12">
+                <div className="row">
+                  <form className="form-inline" onSubmit={handleSearchSubmit}>
+                    <div className="col-lg-3 col-md-3 col-sm-3 form-group">
+                      <label className="label" for="lookingfor"><span className="search">I'm looking for a</span></label>
+                      <select className="dropselect" name="looking_for" value={searchData.looking_for} selected tabindex="1" onChange={handleSearch} >
                         <option value="Male">Groom</option>
                         <option value="Female" selected>Bride</option>
                       </select>
+                      {/* <p className="form-text " style={{ color: "red" }}>{(!searchData.looking_for && error) ? "Looking for is Required" : ""}</p> */}
                     </div>
-                    <div class="col-lg-2 col-md-2 col-sm-2 form-group">
-                      <label class="label" for="lookingfor"><span class="search">From Age</span></label>
-                      <select class="dropselect" id="fromage" onChange={handleSearch} value={searchData.from_age} name="from_age" tabindex="2" required>
+                    <div className="col-lg-2 col-md-2 col-sm-2 form-group">
+                      <label className="label" for="lookingfor"><span className="search">From Age</span></label>
+                      <select className="dropselect" id="fromage" onChange={handleSearch} value={searchData.from_age} name="from_age" tabindex="2" required>
                         <option value="" selected>Select</option>
                         <option value="18">18</option>
                         <option value="19">19</option>
@@ -188,10 +202,11 @@ const Banner = () => {
                         <option value="64">64</option>
                         <option value="65">65</option>
                       </select>
+                      {/* <p className="form-text " style={{ color: "red" }}>{(!searchData.from_age && error) ? "From age is Required" : ""}</p> */}
                     </div>
-                    <div class="col-lg-2 col-md-2 col-sm-2 form-group">
-                      <label class="label" for="lookingfor"><span class="search">To Age</span></label>
-                      <select class="dropselect" id="toage" value={searchData.to_age} name="to_age" tabindex="3" onChange={handleSearch} required>
+                    <div className="col-lg-2 col-md-2 col-sm-2 form-group">
+                      <label className="label" for="lookingfor"><span className="search">To Age</span></label>
+                      <select className="dropselect" id="toage" value={searchData.to_age} name="to_age" tabindex="3" onChange={handleSearch} required>
                         <option value="" selected>Select</option>
                         <option value="18">18</option>
                         <option value="19">19</option>
@@ -242,10 +257,11 @@ const Banner = () => {
                         <option value="64">64</option>
                         <option value="65">65</option>
                       </select>
+                      {/* <p className="form-text " style={{ color: "red" }}>{(!searchData.to_age && error) ? "To age is Required" : ""}</p> */}
                     </div>
-                    <div class="col-lg-3 col-md-3 col-sm-3 form-group">
-                      <label class="label" for="lookingfor"><span class="search" >Religion</span></label>
-                      <select class="dropselect" value={searchData.religion} name="religion" id="religion" onChange={handleSearch} tabindex="4" required>
+                    <div className="col-lg-3 col-md-3 col-sm-3 form-group">
+                      <label className="label" for="lookingfor"><span className="search" >Religion</span></label>
+                      <select className="dropselect" value={searchData.religion} name="religion" id="religion" tabindex="4" onChange={handleSearch} required>
                         <option value="Any" selected>Any</option>
                         <option value="Christian">Christian</option>
                         <option value="Hindu">Hindu</option>
@@ -254,11 +270,11 @@ const Banner = () => {
                         <option value="Muslim">Muslim</option>
                         <option value="Sikh">Sikh</option>
                       </select>
-                      <span></span>
+                      {/* <p className="form-text " style={{ color: "red" }}>{(!searchData.religion && error) ? "Religion is Required" : ""}</p> */}
                     </div>
-                    <div class="btn-box col-md-2 mt-3 ">
-                      <button type="submit" name="submit" value="Lets's Begin" class="theme-btn btn btn-style-two btn-style-letsbegin" >
-                        <span class="btn-title">Lets's Begin </span></button>
+                    <div className="btn-box col-md-2 mt-3 ">
+                      <button value="Lets's Begin" className="theme-btn btn btn-style-two btn-style-letsbegin">
+                        <span className="btn-title">Lets's Begin </span></button>
                     </div>
                   </form>
                 </div>

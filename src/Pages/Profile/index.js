@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Layout from '../../Layout';
-import { getProfile, getuser } from '../../Redux/Actions/ProfileActions';
+import { getProfile, getProfileImage, getuser } from '../../Redux/Actions/ProfileActions';
 import { getLocalStorage } from '../../Utils/LocalStorage';
 import Media from './Media';
 import "./Profile.css";
@@ -9,9 +9,11 @@ import ProfileInfo from './ProfileInfo';
 
 const Profile = () => {
     const data = useSelector(state => state)
-    const { Profile: { userData } } = data
+    const { Profile: { userData, profileData
+        , profileImage } } = data
     const dispatch = useDispatch()
     const [profileTabs, setProfileTabs] = useState("info")
+    const [profileUserData, setProfileUserData] = useState({})
     const handleProfileTabs = (data) => {
         setProfileTabs(data)
     }
@@ -20,8 +22,15 @@ const Profile = () => {
         let id = getLocalStorage("user_id")
         dispatch(getuser(+id))
         dispatch(getProfile(+id))
+        dispatch(getProfileImage(+id))
     }, [getLocalStorage("user_id")])
-    console.log(data, "datadata");
+    useEffect(() => {
+        if (!!profileData && !!userData) {
+            setProfileUserData({ ...profileData, ...userData })
+        }
+
+    }, [userData, profileData])
+    console.log(profileImage.image, "datadata");
     return (
         <>
             <Layout>
@@ -32,11 +41,11 @@ const Profile = () => {
                             <div class="col-lg-6">
                                 <div class="main-content d-flex">
                                     <div class="img-content">
-                                        <img class="image-wrap " src="/assets/images/1.jpg" />
+                                        <img class="image-wrap " src={profileImage.image} />
                                     </div>
                                     <div class="text-wrap ml-2">
                                         <div class="text-content d-flex">
-                                            <h6 class="mr-2"> Kartik Tyagi</h6>
+                                            <h6 class="mr-2"> {profileUserData && profileUserData?.first_name?.charAt(0)?.toUpperCase() + profileUserData?.first_name?.slice(1) + " " + profileUserData?.last_name}</h6>
                                             <span class="mr-2 mt-2"><i class="fa fa-check-circle" style={{ fontSize: 20, color: "#e6d7da" }}></i></span>
                                             <span class="status mr-2 mt-2"> offline
                                             </span>
@@ -63,7 +72,7 @@ const Profile = () => {
 
                                         </div>
                                         <div class="third-content">
-                                            <h6 class="text-white">Tester</h6>
+                                            <h6 class="text-white">{profileData.occupation}</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -123,7 +132,7 @@ const Profile = () => {
                     <div class="auto-container">
                         <div class="row">
                             <div class="col-lg-8">
-                                {profileTabs == "info" && <ProfileInfo />}
+                                {profileTabs == "info" && <ProfileInfo profileUserData={profileUserData} />}
                             </div>
                             <div class="col-lg-4">
                                 <div class="one-card  my-4 d-flex justify-content-between">
@@ -144,7 +153,7 @@ const Profile = () => {
                                     <div class="border-bottom-line mx-4 my-4"></div>
                                     <div class="profile-image">
                                         <img src="/assets/images/1.jpg" />
-                                        <h4>hello</h4>
+                                        <h4>{profileUserData.about_me}</h4>
                                         <p class="m-2">Lorem, ipsum dolor sit amet consectetur adipisicing elit</p>
 
                                         <div class="border-line">

@@ -4,12 +4,14 @@ import LookingForModal from '../../components/SignupModal/LookingForModal';
 import SignUpModal from '../../components/SignupModal/SignUpModal';
 import Layout from '../../Layout'
 import { getCommunities, getReligion, registerUser } from '../../Redux/Actions/AuthAction';
-import { userNameValidation, validEmail, validPassword } from '../../Utils/Validation';
+import { firstNameAndLastNameValidation, userNameValidation, validEmail, validPassword } from '../../Utils/Validation';
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai"
 import { toastify } from '../../Utils/Function';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
+    const navigate = useNavigate()
     const religionState = useSelector(state => state)
     const { Auth: { religionData, communitiesData } } = religionState
     const dispatch = useDispatch()
@@ -26,7 +28,9 @@ const SignUp = () => {
         password: "",
         confirm_password: "",
         mobile_number: "",
-        gender: ""
+        gender: "",
+        first_name: "",
+        last_name: "",
     })
     const [dateOfBirth, setDateOfBirth] = useState({
         dob: "",
@@ -57,7 +61,7 @@ const SignUp = () => {
     }
     const handleSubmit = async (e) => {
         e.preventDefault()
-        if (!!register.email?.length && !!register.password?.length && register.community && register.confirm_password && register.living_in && register.mobile_number && register.password && register.religion && register.username) {
+        if (!!register.email?.length && !!register.password?.length && register.community && register.confirm_password && register.living_in && register.mobile_number && register.password && register.religion && register.username && register.first_name && register.last_name) {
             if (!validEmail(register.email) && !validPassword(register.password) && register.mobile_number?.length !== 10 && !userNameValidation(register.username)) {
                 setError(true)
             } else {
@@ -170,6 +174,7 @@ const SignUp = () => {
                 dobYear: "",
                 dobMonth: "",
             })
+            navigate('/login')
         }
 
     }, [registrationRequest])
@@ -211,6 +216,15 @@ const SignUp = () => {
 
                                             <form method="post" action="#" id="contact-form" name="matri" onSubmit={(e) => handleSubmit(e)}>
                                                 <div className="row clearfix">
+                                                    <div className="col-lg-6 col-md-6 col-sm-12 form-group">
+                                                        <input type="text" maxlength="40" name="first_name" placeholder="First Name" tabindex="1" onChange={(e) => handleRegister(e)} />
+                                                        <p className="form-text " style={{ color: "red" }}>{(!register.first_name?.length && error) ? "First Name is Required" : (!firstNameAndLastNameValidation(register.first_name) && error) ? "The First Name must be the only letter that may be in uppercase or lowercase and minimum characters length 4." : ""}</p>
+                                                    </div>
+
+                                                    <div className="col-lg-6 col-md-6 col-sm-12 form-group">
+                                                        <input type="text" maxlength="10" name="last_name" placeholder="Last Name" tabindex="2" onChange={(e) => handleRegister(e)} />
+                                                        <p className="form-text " style={{ color: "red" }}>{(!register.last_name?.length && error) ? "First Name is Required" : (!firstNameAndLastNameValidation(register.last_name) && error) ? "The Last Name must be the only letter that may be in uppercase or lowercase and minimum characters length 4." : ""}</p>
+                                                    </div>
                                                     <div className="col-lg-12 col-md-12 col-sm-12 form-group">
                                                         <input type="text" name="username" placeholder="User Name" maxlength="20" value={register.username} onChange={(e) => handleRegister(e)} />
                                                         <p className="form-text " style={{ color: "red" }}>{(!register.username.length && error) ? "User Name is Required" : (!userNameValidation(register.username) && error) ? "Please use only letter (a-z), numbers and periods and user-name must be a minimum 5 letters." : ""}</p>

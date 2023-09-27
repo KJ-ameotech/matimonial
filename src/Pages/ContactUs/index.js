@@ -1,6 +1,7 @@
 import React from 'react'
 import Layout from '../../Layout'
 import image from "../../assets/images/background/5.jpg"
+import { Link } from 'react-router-dom'
 const Contactus = () => {
     return (
         <Layout >
@@ -9,7 +10,7 @@ const Contactus = () => {
                     <div className="auto-container">
                         <h1 className="d-none d-lg-block d-xl-block d-md-block">Contact Us</h1>
                         <ul className="bread-crumb clearfix">
-                            <li><a href="index">Home</a></li>
+                            <li><Link to="/">Home</Link></li>
                             <li>Contact Us</li>
 
                         </ul>

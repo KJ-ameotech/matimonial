@@ -1,7 +1,8 @@
 import axios from "axios"
 import { Api } from "../../Utils/ApiUrl"
-import { PROFILE_FAILURE, PROFILE_IMAGE_USER_FAILURE, PROFILE_IMAGE_USER_REQUEST, PROFILE_IMAGE_USER_SUCCESS, PROFILE_POST_FAILURE, PROFILE_POST_REQUEST, PROFILE_POST_SUCCESS, PROFILE_REQUEST, PROFILE_SUCCESS, PROFILE_USER_FAILURE, PROFILE_USER_REQUEST, PROFILE_USER_SUCCESS } from "../Constants";
+import { FRIEND_REQUEST_FAILURE, FRIEND_REQUEST_REQUEST, FRIEND_REQUEST_SUCCESS, GET_ALL_PROFILE_FAILURE, GET_ALL_PROFILE_REQUEST, GET_ALL_PROFILE_SUCCESS, GET_PROFILE_IMAGE_FAILURE, GET_PROFILE_IMAGE_REQUEST, GET_PROFILE_IMAGE_SUCCESS, GET_SEARCH_PROFILE_FAILURE, GET_SEARCH_PROFILE_REQUEST, GET_SEARCH_PROFILE_SUCCESS, PROFILE_FAILURE, PROFILE_IMAGE_USER_FAILURE, PROFILE_IMAGE_USER_REQUEST, PROFILE_IMAGE_USER_SUCCESS, PROFILE_POST_FAILURE, PROFILE_POST_REQUEST, PROFILE_POST_SUCCESS, PROFILE_REQUEST, PROFILE_SUCCESS, PROFILE_USER_FAILURE, PROFILE_USER_REQUEST, PROFILE_USER_SUCCESS } from "../Constants";
 import { header } from "../../Utils/Function"
+import { getLocalStorage } from "../../Utils/LocalStorage";
 
 const ProfileRequest = () => ({ type: PROFILE_REQUEST })
 
@@ -104,7 +105,7 @@ export const uploadProfileImage = (image) => {
         dispatch(profileImageRequest())
         const formData = new FormData();
         formData.append('image', image);
-        formData.append("user", 3)
+        formData.append("user", getLocalStorage("user_id"))
         const requestOptions = {
             method: 'POST',
             data: formData, // Use 'data' to send the FormData
@@ -118,6 +119,128 @@ export const uploadProfileImage = (image) => {
             })
             .catch((error) => {
                 dispatch(profileImageFailure(error))
+            })
+    }
+}
+
+
+
+const getProfileRequest = () => ({ type: GET_PROFILE_IMAGE_REQUEST })
+
+const getProfileSuccess = data => ({
+    type: GET_PROFILE_IMAGE_SUCCESS,
+    payload: data,
+}
+)
+
+const getProfileFailure = error => ({
+    type: GET_PROFILE_IMAGE_FAILURE,
+    payload: error,
+    error: true,
+})
+export const getProfileImage = (id) => {
+    return async (dispatch) => {
+        dispatch(getProfileRequest())
+        axios.get(Api.getProfile(id))
+            .then((response) => {
+                dispatch(getProfileSuccess(response.data))
+            })
+            .catch((error) => {
+                dispatch(getProfileFailure(error))
+            })
+    }
+}
+
+
+
+
+const getAllProfileRequest = () => ({ type: GET_ALL_PROFILE_REQUEST })
+
+const getAllProfileSuccess = data => ({
+    type: GET_ALL_PROFILE_SUCCESS,
+    payload: data,
+}
+)
+
+const getAllProfileFailure = error => ({
+    type: GET_ALL_PROFILE_FAILURE,
+    payload: error,
+    error: true,
+})
+export const getAllProfileUser = () => {
+    return async (dispatch) => {
+        dispatch(getAllProfileRequest())
+        axios.get(Api.allProfile)
+            .then((response) => {
+                dispatch(getAllProfileSuccess(response.data))
+            })
+            .catch((error) => {
+                dispatch(getAllProfileFailure(error))
+            })
+    }
+}
+
+
+const searchProfileRequest = () => ({ type: GET_SEARCH_PROFILE_REQUEST })
+
+const searchProfileSuccess = data => ({
+    type: GET_SEARCH_PROFILE_SUCCESS,
+    payload: data,
+}
+)
+
+const searchProfileFailure = error => ({
+    type: GET_SEARCH_PROFILE_FAILURE,
+    payload: error,
+    error: true,
+})
+export const getSearchProfileUser = (quary) => {
+    return async (dispatch) => {
+        dispatch(searchProfileRequest())
+        axios.get(Api.searchProfile(quary))
+            .then((response) => {
+                dispatch(searchProfileSuccess(response.data))
+            })
+            .catch((error) => {
+                dispatch(searchProfileFailure(error))
+            })
+    }
+}
+
+
+
+const friendRequest = () => ({ type: FRIEND_REQUEST_REQUEST })
+
+const friendRequestSuccess = data => ({
+    type: FRIEND_REQUEST_SUCCESS,
+    payload: data,
+}
+)
+
+const friendRequestFailure = error => ({
+    type: FRIEND_REQUEST_FAILURE,
+    payload: error,
+    error: true,
+})
+export const sendFriendRequest = (linked_id) => {
+    return async (dispatch) => {
+        const formData = new FormData();
+        formData.append('liked_user', linked_id);
+        formData.append("user", getLocalStorage("user_id"))
+        const requestOptions = {
+            method: 'POST',
+            data: formData, // Use 'data' to send the FormData
+            headers: {
+                'Content-Type': 'multipart/form-data', // Set the correct content type
+            },
+        };
+        dispatch(friendRequest())
+        axios.post(Api.sendFriendRequest, formData, requestOptions)
+            .then((response) => {
+                dispatch(friendRequestSuccess(response.data))
+            })
+            .catch((error) => {
+                dispatch(friendRequestFailure(error))
             })
     }
 }

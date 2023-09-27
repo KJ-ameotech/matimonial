@@ -105,6 +105,7 @@ const AuthReducer = (state = initialState, action) => {
                 communitiesData: action.payload,
             }
 
+
         default:
             return state
     }

@@ -9,5 +9,9 @@ export const Api = {
     profile: (id) => `${baseUrl}/profiles/${id}/`,
     profilePost: `${baseUrl}/profiles/`,
     user: (id) => `${baseUrl}/api/user/${id}/`,
-    profileImage: `${baseUrl}/profiles_picture/`
+    profileImage: `${baseUrl}/profiles_picture/`,
+    getProfile: (id) => `${baseUrl}/profiles_picture/${id}`,
+    allProfile: `${baseUrl}/profiles/`,
+    searchProfile: (quary) => `${baseUrl}/search/${quary}`,
+    sendFriendRequest: `${baseUrl}/like/`,
 }
