@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { removeLocalStorage } from "../Utils/LocalStorage";
+import { getLocalStorage, removeLocalStorage } from "../Utils/LocalStorage";
+import { BsFillBellFill } from "react-icons/bs"
+import { useDispatch } from "react-redux";
+import { getAllNotification } from "../Redux/Actions/ProfileActions";
 
 
 const Navbar = ({ auth }) => {
+
   const { pathname } = useLocation()
 
   const navigate = useNavigate()
@@ -14,7 +18,7 @@ const Navbar = ({ auth }) => {
     removeLocalStorage('user_id')
     window.location.href = "/login"
   }
-  console.log(pathname, "location");
+
   return (
 
     <header className="main-header header-style-two" >
@@ -43,6 +47,7 @@ const Navbar = ({ auth }) => {
                   <li className={`${pathname === "/membership" ? 'current' : ""} dropdown`}><Link to="/membership">Membership</Link></li>
                   <li><a href="#">Search</a></li>
                   <li className={`${pathname === "/contact-us" ? 'current' : ""} dropdown`}><Link to="/contact-us">Contact</Link></li>
+                  <li className={`${pathname === "/all-notification" ? 'current' : ""} dropdown`}><Link to="/all-notification "><BsFillBellFill /></Link></li>
                   {/* <li><a href="#" target="_blank">Blog</a></li> */}
                 </ul>
               </div>

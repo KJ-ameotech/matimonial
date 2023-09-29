@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Layout from '../../Layout';
 import { getProfile, getProfileImage, getuser } from '../../Redux/Actions/ProfileActions';
-import { getLocalStorage } from '../../Utils/LocalStorage';
+import { getLocalStorage, setLocalStorage } from '../../Utils/LocalStorage';
 import Media from './Media';
 import "./Profile.css";
 import ProfileInfo from './ProfileInfo';
@@ -30,6 +30,9 @@ const Profile = () => {
         }
 
     }, [userData, profileData])
+    useEffect(() => {
+        setLocalStorage("profileData", JSON.stringify(profileUserData))
+    })
     console.log(profileImage.image, "datadata");
     return (
         <>

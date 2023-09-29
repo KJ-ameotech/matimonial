@@ -12,6 +12,8 @@ import { header, toastify } from '../../Utils/Function';
 import axios from 'axios';
 const ProfileUserDetail = () => {
     const dispatch = useDispatch()
+    const profileState = useSelector((state) => state.Profile)
+    const { uploadImageRes: { response } } = profileState
     const [profileData, setProfileData] = useState({
         height: "",
         weight: "",
@@ -97,8 +99,9 @@ const ProfileUserDetail = () => {
         const obj = { ...hobbiesList }
         setProfileData({ ...profileData, hobbies: { ...obj } })
     }, [hobbiesList])
+    // useEffect(())
 
-    console.log(getLocalStorage("user_id"), "profileData");
+    console.log(response, "profileState");
     return (
         <Layout>
             <div className='user_profile' style={{ padding: "100px 0" }}>

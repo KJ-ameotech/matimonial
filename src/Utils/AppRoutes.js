@@ -2,6 +2,8 @@ import React from 'react';
 import { lazy, Suspense } from "react";
 import Loading from "../components/Loading";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+
+// import TestLike from '../components/LikeDislikeCard/TestLike';
 const Profile = lazy(() => import("../Pages/Profile"))
 const Feed = lazy(() => import("../Container/HomeContainer"))
 const SignUp = lazy(() => import("../Pages/AuthPages/SignUp"))
@@ -14,6 +16,10 @@ const Contactus = lazy(() => import('../Pages/ContactUs'))
 const ProfileUserDetail = lazy(() => import('../Pages/Profile/ProfileUserDetail'))
 const LikeDislikeCard = lazy(() => import('../components/LikeDislikeCard'))
 const Chat = lazy(() => import('../Pages/chat'))
+const Notification = lazy(() => import('../Pages/Notification'))
+const Test = lazy(() => import('../Pages/chat/Test'))
+
+
 const AppRoutes = ({ auth }) => {
     return (
         <Routes>
@@ -32,6 +38,10 @@ const AppRoutes = ({ auth }) => {
             <Route path="/chat"
                 Component={(props) => auth ? (
                     <Suspense fallback={<Loading />}><Chat {...props} /> </Suspense>) : (
+                    <Navigate to="/login" replace />)} />
+            <Route path="/all-notification"
+                Component={(props) => auth ? (
+                    <Suspense fallback={<Loading />}><Notification {...props} /> </Suspense>) : (
                     <Navigate to="/login" replace />)} />
             {/* private routes end here*/}
 
@@ -60,7 +70,9 @@ const AppRoutes = ({ auth }) => {
 
             {/* public  routes start here*/}
             <Route path="/contact-us" element={<Suspense fallback={<Loading />}><Contactus /></Suspense>} />
-            {/* <Route path="/card" element={<Suspense fallback={<Loading />}><LikeDislikeCard /></Suspense>} /> */}
+            <Route path="/testchat" element={<Suspense fallback={<Loading />}><Test /></Suspense>} />
+            {/* <Route path="/connection" element={<Suspense fallback={<Loading />}><TestLike /></Suspense>} /> */}
+            <Route path="/connection" element={<Suspense fallback={<Loading />}><LikeDislikeCard /></Suspense>} />
             <Route path="/" element={<Suspense fallback={<Loading />}><Feed /></Suspense>} />
             <Route path="/membership" element={<Suspense fallback={<Loading />}><MemberShip /></Suspense>} />
             <Route path="/about" element={<Suspense fallback={<Loading />}><AboutUs /></Suspense>} />

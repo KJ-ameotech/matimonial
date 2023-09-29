@@ -6,6 +6,7 @@ import OwlCarousel from 'react-owl-carousel';
 import { getSearchProfileUser } from "../Redux/Actions/ProfileActions";
 import { useDispatch } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
+import { getLocalStorage } from "../Utils/LocalStorage";
 
 const Banner = () => {
   const dispatch = useDispatch()

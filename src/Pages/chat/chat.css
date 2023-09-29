@@ -269,7 +269,7 @@ ul li, ol li{
 }
 
 .content-chat .content-chat-message-user{
-    display: none;
+    /* display: none; */
     background-color: #ffffff;
     padding: 15px;
     border-radius: 25px;
@@ -297,8 +297,8 @@ ul li, ol li{
 }
 
 .content-chat .content-chat-message-user .head-chat-message-user img{
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     object-fit: cover;
 }
@@ -306,6 +306,8 @@ ul li, ol li{
 .content-chat .content-chat-message-user .head-chat-message-user .message-user-profile small {
     display: flex;
     gap: 5px;
+    display: flex;
+    align-items: center;
 }
 
 .content-chat .content-chat-message-user .head-chat-message-user .message-user-profile small .online{
@@ -475,9 +477,9 @@ ul li, ol li{
 }
 
 .content-chat .content-chat-message-user .footer-chat-message-user button{
-    font-size: 18px;
-    width: 38px;
-    height: 38px;
+    /* font-size: 18px; */
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
     border: none;
     background-color: #890025;

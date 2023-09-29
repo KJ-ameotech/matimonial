@@ -1,4 +1,4 @@
-import React, { useEffect, useState, memo, useCallback } from 'react'
+import React, { useEffect, useState } from 'react'
 import "./LikeDislikeCard.css"
 import { getAllProfileUser, sendFriendRequest } from '../../Redux/Actions/ProfileActions'
 import { useDispatch, useSelector } from 'react-redux'
@@ -31,6 +31,7 @@ const LikeDislikeCard = () => {
     let startX = 0, startY = 0, moveX = 0, moveY = 0
     const hanedleLikeDislike = (action) => {
         const currentUserProfileData = allProfilesData[currentCardIndex];
+
         const userId = currentUserProfileData.id;
         console.log(userId, "currentUserProfileData");
         if (action == "like") {
@@ -48,9 +49,18 @@ const LikeDislikeCard = () => {
         if (currentCardIndex < allProfilesData.length - 1) {
             setCurrentCardIndex(currentCardIndex + 1);
         }
-
+        if (action === "like") {
+            moveX = 1
+            moveY = 0
+            complete()
+        } else {
+            moveX = -1
+            moveY = 0
+            complete()
+        }
     }
     useEffect(() => {
+        alert("hello")
         let classId = document.body.querySelector('.frame')
         if (classId) setFrame(classId)
     }, [frame])
@@ -62,68 +72,65 @@ const LikeDislikeCard = () => {
             setLikeText(getChild.children[0])
         }
     }, [frame])
-    useEffect(() => {
-        initCard(current)
-    }, [current])
-    const appendCard = useCallback((data) => {
+
+    initCard(current)
+    function appendCard(data) {
         const firstCard = frame?.children[0]
         const newCard = document.createElement('div')
         newCard.className = 'card'
         newCard.style.backgroundImage = `url(${data.img})`
         newCard.innerHTML = `
-      <div class="is-like">LIKE</div>
-      <div class="bottom">
-        <div class="title">
-          <span>${data.name}</span>
-          <span>${data.age}</span>
-        </div>
-        <div class="info">
-          ${data.distance} miles away
-        </div>
-      </div>
-    `
+          <div class="is-like">LIKE</div>
+          <div class="bottom">
+            <div class="title">
+              <span>${data.name}</span>
+              <span>${data.age}</span>
+            </div>
+            <div class="info">
+              ${data.distance} miles away
+            </div>
+          </div>
+        `
         if (firstCard) frame?.insertBefore(newCard, firstCard)
         else frame?.appendChild(newCard)
         setImageCount(prev => prev + 1)
-    }, [frame])
+    }
 
     function initCard(card) {
         card?.addEventListener('pointerdown', onPointerDown)
     }
-    const setTransform = useCallback((x, y, deg, duration) => {
+
+    function setTransform(x, y, deg, duration) {
         current.style.transform = `translate3d(${x}px, ${y}px, 0) rotate(${deg}deg)`
         likeText.style.opacity = Math.abs((x / window.innerWidth * 2.1))
         likeText.className = `is-like ${x > 0 ? 'like' : 'nope'}`
         if (duration) current.style.transition = `transform 3s`
-    }, [current, likeText])
+    }
 
-    const onPointerDown = useCallback(({ clientX, clientY }) => {
+    function onPointerDown({ clientX, clientY }) {
         startX = clientX
         startY = clientY
         current.addEventListener('pointermove', onPointerMove)
         current.addEventListener('pointerup', onPointerUp)
         current.addEventListener('pointerleave', onPointerUp)
-    }, [current])
-    const onPointerMove = useCallback(({ clientX, clientY }) => {
+    }
+
+    function onPointerMove({ clientX, clientY }) {
         moveX = clientX - startX
         moveY = clientY - startY
         setTransform(moveX, moveY, moveX / window.innerWidth * 50)
-    }, [current])
+    }
 
-
-    const onPointerUp = useCallback(() => {
+    function onPointerUp() {
         current.removeEventListener('pointermove', onPointerMove)
         current.removeEventListener('pointerup', onPointerUp)
         current.removeEventListener('pointerleave', onPointerUp)
         if (Math.abs(moveX) > frame.clientWidth / 2) {
             current.removeEventListener('pointerdown', onPointerDown)
-            console.log("how many")
             complete()
         } else cancel()
-    }, [current, frame, onPointerDown])
-
-
-    const complete = useCallback(() => {
+    }
+    function complete() {
         const flyX = (Math.abs(moveX) / moveX) * window.innerWidth * 1.3;
         const flyY = (moveY / moveX) * flyX;
         setTransform(flyX, flyY, (flyX / window.innerWidth) * 50, window.innerWidth);
@@ -142,24 +149,13 @@ const LikeDislikeCard = () => {
 
         appendCard(data[imgCount % 4]);
         if (moveX > 0) {
-            // alert('ddfdfsd')
-            const currentUserProfileData = allProfilesData[currentCardIndex];
-            // const userId = currentUserProfileData.id;
-            // let x = setTimeout(() => {
-            //     dispatch(sendFriendRequest(userId))
-            // }, 800)
-
-            // if (x) clearInterval(x)
-            // setAcceptedUsers([...acceptedUsers, userId]);
-            // if (currentCardIndex < allProfilesData.length - 1) {
-            //     setCurrentCardIndex(currentCardIndex + 1);
-            // }
             console.log("helloooooo")
         } else {
             console.log("byeeeeeeeee")
         }
+    }
 
-    })
+
 
     function cancel() {
         setTransform(0, 0, 0, 100)
@@ -169,20 +165,18 @@ const LikeDislikeCard = () => {
         dispatch(getAllProfileUser())
     }, [])
     useEffect(() => {
-        if (!!allProfile?.length) {
-            // alert("hello")
-            setAllProfilesData(allProfile)
-        } else if (allSearchData) {
+        if (allSearchData) {
+            setAllProfilesData(allSearchData)
+        } else if (allProfile) {
             const removeCurrentuserId = allProfile.filter((o) => o.user != getLocalStorage('user_id'))
             setAllProfilesData(removeCurrentuserId)
         }
     }, [allProfile, allSearchData])
-    // useEffect(() => {
-    //     if (allProfilesData) {
-    //         setCurrentUser(allProfilesData[currentCardIndex])
-    //     }
-    // })
-    console.log(allProfilesData, "allProfilesData");
+    useEffect(() => {
+        if (allProfilesData) {
+            setCurrentUser(allProfilesData[currentCardIndex])
+        }
+    })
     return (
         <section>
             <div class="auto-container">
@@ -206,4 +200,4 @@ const LikeDislikeCard = () => {
     )
 }
 
-export default memo(LikeDislikeCard)
+export default LikeDislikeCard
