@@ -10,6 +10,8 @@ import { getLocalStorage } from "../../Utils/LocalStorage";
 import { baseUrl } from "../../Utils/ApiUrl";
 import { BiSend } from "react-icons/bi"
 
+let chatPortURL = "ws://127.0.0.1:8001/ws/testings/";
+
 const Chat = () => {
     const dispatch = useDispatch();
     const friendListState = useSelector((state) => state.Profile)
@@ -18,7 +20,7 @@ const Chat = () => {
     const [getSingleFriendData, setGetSingleFriendData] = useState({})
     const [allMassage, setAllMassage] = useState([])
 
-    const chatSocket = new WebSocket("ws://127.0.0.1:8000/ws/testings/");
+    const chatSocket = new WebSocket(chatPortURL);
     const [onlineUsers, setOnlineUsers] = useState([]);
     const [userId, setUserId] = useState('')
     const [roomName, setRoomName] = useState('');
@@ -43,20 +45,22 @@ const Chat = () => {
 
     useEffect(() => {
         let list = [
-            { username: "testt", message: "tset", date: new Date().toLocaleTimeString(), id: 1, image: "/assets/images/background/bg.jpg" },
-            { username: "testt 1", message: "tset", date: new Date().toLocaleTimeString(), id: 26, image: "/assets/images/background/bg.jpg" },
-            { username: "testt 1", message: "tset", date: new Date().toLocaleTimeString(), id: 26, image: "/assets/images/background/bg.jpg" },
-            { username: "testt", message: "tset", date: new Date().toLocaleTimeString(), id: 1, image: "/assets/images/background/bg.jpg" },
+            { username: "Rakesh", message: "Hi", date: new Date().toLocaleTimeString(), id: 1, image: "/assets/images/background/bg.jpg" },
+            { username: "Paras", message: "Hello", date: new Date().toLocaleTimeString(), id: 2, image: "/assets/images/background/bg.jpg" },
+            { username: "Paras", message: "How are you?", date: new Date().toLocaleTimeString(), id: 2, image: "/assets/images/background/bg.jpg" },
+            { username: "Rakesh", message: "I am good", date: new Date().toLocaleTimeString(), id: 1, image: "/assets/images/background/bg.jpg" },
         ]
         setMessages(list)
     }, []);
 
     const handleSendMessage = (e) => {
         e.preventDefault();
-        let data = { username: "rakesh_thapa", message: sendMessage, room_name: "testing" };
-        console.log("tesitng socket", data);
-        chatSocket.send(JSON.stringify(data));
+        let data = { username: "asdds", message: sendMessage, room_name: "first_room" };
         setSendMessage('');
+        debugger;
+        console.log("tesitng socket", data);
+        // chatSocket.send(JSON.stringify(data));
+
     }
 
     useEffect(() => {
@@ -71,8 +75,8 @@ const Chat = () => {
 
     useEffect(() => {
         if (u_id) {
-            const getSingle = friendListData.find((item) => item.id == u_id);
-            setGetSingleFriendData(getSingle)
+            let getSingle = friendListData.find((item) => item.id == u_id);
+            setGetSingleFriendData(getSingle);
             console.log(getSingle, "getSingle");
         }
     }, [u_id])
@@ -83,9 +87,7 @@ const Chat = () => {
         setU_id(item.id)
         setUserId(item.user)
     }
-    console.log(u_id, "u_id");
 
-    console.log(new Date().toLocaleTimeString(), "allMassage");
     return (
         <Layout>
             <section style={{ padding: "100px 0" }}>
@@ -105,25 +107,20 @@ const Chat = () => {
                         <div className="list-search-user-chat mt-20">
                             {friendListData && friendListData.map((item, index) => {
                                 return (
-                                    <div className="user-chat" key={index} data-username={item.liked_user_data
-                                        ?.first_name.charAt(0).toUpperCase() + item.liked_user_data
-                                            ?.first_name.slice(1) + " " + item.liked
-                                                ?.last_name.charAt(0).toUpperCase() + item.liked_user_data.last_name
-                                                    .slice(1)} onClick={() => handleCurrentChatUser(item)}>
+                                    <div className="user-chat" key={index}
+                                        data-username={item?.first_name.charAt(0).toUpperCase() +
+                                            item?.first_name.slice(1) + " " +
+                                            item?.last_name.charAt(0).toUpperCase() +
+                                            item?.last_name.slice(1)}
+                                        onClick={() => handleCurrentChatUser(item)}>
                                         <div className="user-chat-img">
-                                            <img src={item.liked_user_profile_picture_data
-                                                ?.image ? baseUrl + item.liked_user_profile_picture_data
-                                                    ?.image :
+                                            <img src={item?.profile_image ? baseUrl + item?.profile_image :
                                                 "/assets/images/background/bg.jpg"} alt="user_image" />
                                             <div className="offline"></div>
                                         </div>
 
                                         <div className="user-chat-text">
-                                            <p className="mt-0 mb-0"><strong>{item.liked_user_data
-                                                ?.first_name.charAt(0).toUpperCase() + item.liked_user_data
-                                                    ?.first_name.slice(1) + " " + item.liked_user_data
-                                                        ?.last_name.charAt(0).toUpperCase() + item.liked_user_data.last_name
-                                                            .slice(1)}</strong></p>
+                                            <p className="mt-0 mb-0"><strong>{item?.first_name.charAt(0).toUpperCase() + item?.first_name.slice(1) + " " + item?.last_name.charAt(0).toUpperCase() + item?.last_name.slice(1)}</strong></p>
                                             <small>Hi, how are you?</small>
                                         </div>
                                     </div>
@@ -161,23 +158,15 @@ const Chat = () => {
 
                             <div className="head-chat-message-user">
 
-                                <img src={getSingleFriendData.liked_user_profile_picture_data
-                                    ?.image ? baseUrl + getSingleFriendData.liked_user_profile_picture_data
-                                        ?.image :
-                                    "/assets/images/background/bg.jpg"} alt="" />
+                                <img src={getSingleFriendData?.profile_image ? baseUrl + getSingleFriendData?.profile_image : "/assets/images/background/bg.jpg"} alt="" />
                                 <div className="message-user-profile">
-                                    <p className="mt-0 mb-0 text-white"><strong>{getSingleFriendData.liked_user_data
-                                        ?.first_name.charAt(0).toUpperCase() + getSingleFriendData.liked_user_data
-                                            ?.first_name.slice(1) + " " + getSingleFriendData.liked_user_data
-                                                ?.last_name.charAt(0).toUpperCase() + getSingleFriendData.liked_user_data?.last_name
-                                                    .slice(1)}</strong></p>
+                                    <p className="mt-0 mb-0 text-white"><strong>{getSingleFriendData?.first_name?.charAt(0).toUpperCase() + getSingleFriendData?.first_name?.slice(1) + " " + getSingleFriendData?.last_name?.charAt(0).toUpperCase() + getSingleFriendData?.last_name?.slice(1)}</strong></p>
                                     <small className="text-white"><p className="offline  mt-0 mb-0"></p>Offline</small>
                                 </div>
                             </div>
                             <div className="body-chat-message-user">
                                 {!!messages?.length && messages?.map((item) => {
                                     return (
-
                                         <div className={item?.id == u_id ? "message-user-left" : "message-user-right"}>
                                             <div className={item?.id == u_id ? "message-user-left-img" : "message-user-right-img"}>
                                                 <img src={item.image} alt="" />
@@ -188,38 +177,12 @@ const Chat = () => {
                                                 <strong>{item.message}</strong>
                                             </div>
                                         </div>
-
-
                                     )
                                 })}
-
-
-
-
-                                {/* <div className="message-user-left">
-                                    <div className="message-user-left-img">
-                                        <img src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" />
-                                        <p className="mt-0 mb-0"><strong>Maria Dennis</strong></p>
-                                        <small>min 17:59</small>
-                                    </div>
-                                    <div className="message-user-left-text">
-                                        <strong>Hola, ¿Cómo estás?</strong>
-                                    </div>
-                                </div> */}
-                                {/* <div className="message-user-right">
-                                    <div className="message-user-right-img">
-                                        <p className="mt-0 mb-0"><strong>Luis Angel Solano Rivera</strong></p>
-                                        <small>min 17:59</small>
-                                        <img src="https://images.pexels.com/photos/2117283/pexels-photo-2117283.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="" />
-                                    </div>
-                                    <div className="message-user-right-text">
-                                        <strong>Hola, ¿Cómo estás?</strong>
-                                    </div>
-                                </div> */}
                             </div>
                             <div className="footer-chat-message-user">
                                 <div className="message-user-send">
-                                    <input type="text" placeholder="Aa" onChange={(e) => setSendMessage(e.target.value)} />
+                                    <input type="text" value={sendMessage} placeholder="Please write message" onChange={(e) => setSendMessage(e.target.value)} />
                                 </div>
                                 <button type="button" onClick={handleSendMessage}>
                                     <BiSend size={25} />

@@ -5,7 +5,6 @@ const ShowAll = () => {
     return (
         <>
             <div class="mainBannerSection">
-
                 <div class="auto-container">
                     <div class="row">
                         <div class="col-lg-6">

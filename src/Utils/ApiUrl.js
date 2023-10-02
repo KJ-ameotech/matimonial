@@ -1,5 +1,5 @@
-export let baseUrl = "http://127.0.0.1:8001";
-export let chatBaseUrl = "http://127.0.0.1:8000";
+export let baseUrl = "http://127.0.0.1:8000";
+export let chatBaseUrl = "http://127.0.0.1:8001";
 // const socket = io('http://your-server-url');
 export const Api = {
     register: `${baseUrl}/register/`,
@@ -17,6 +17,7 @@ export const Api = {
     sendFriendRequest: `${baseUrl}/like/`,
     allNotification: (quary) => `${baseUrl}/api/notification/${quary}`,
     acceptFriendReq: (id) => `${baseUrl}/userlikes/${id}/`,
-    friendList: (id) => `${baseUrl}/followed-users/${id}/`,
+    // friendList: (id) => `${baseUrl}/followed-users/${id}/`,
+    friendList: (id) => `${baseUrl}/liked-users-likes/${id}/`,
     createChatRoom: `${chatBaseUrl}/rooms/`,
 }
